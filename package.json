@@ -1,6 +1,6 @@
 {
   "name": "@exoplay/exobot-plugin-points",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "exobot plugin for points",
   "main": "points.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "points"
   ],
   "author": "Jack Lawson <ajacksified@gmail.com>",
-  "license": "MIT",
+  "license": "LGPL",
   "bugs": {
     "url": "https://github.com/exoplay/exobot-plugin-points/issues"
   },
