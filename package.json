@@ -1,8 +1,8 @@
 {
   "name": "@exoplay/exobot-plugin-points",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "exobot plugin for points",
-  "main": "index.js",
+  "main": "points.js",
   "scripts": {
     "test": "blueprints -t",
     "build": "blueprints -p",
