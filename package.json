@@ -1,0 +1,34 @@
+{
+  "name": "exobot-plugin-points",
+  "version": "0.0.1",
+  "description": "exobot plugin for points",
+  "main": "index.js",
+  "scripts": {
+    "test": "blueprints -t",
+    "build": "blueprints -p",
+    "watch": "blueprints -p -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exoplay/exobot-plugin-points.git"
+  },
+  "keywords": [
+    "exobot",
+    "chat",
+    "bot",
+    "plugin",
+    "points"
+  ],
+  "author": "Jack Lawson <ajacksified@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exoplay/exobot-plugin-points/issues"
+  },
+  "homepage": "https://github.com/exoplay/exobot-plugin-points#readme",
+  "peerDependencies": {
+    "@exoplay/exobot": "~1.0.0"
+  },
+  "dependencies": {
+    "@r/build": "git://github.com/ajacksified/node-build#679c3f3d47c0916237d55128ece4cc817b489ef8"
+  }
+}
