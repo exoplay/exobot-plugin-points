@@ -1,7 +1,7 @@
 import { ChatPlugin } from '@exoplay/exobot';
 
 export const nameToId = (name) => {
-  return name.replace(/[^\w]/g, '');
+  return name.replace(/[^\w]/g, '').toLowerCase();
 }
 
 export default class HelpPlugin extends ChatPlugin {
