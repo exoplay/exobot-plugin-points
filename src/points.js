@@ -4,7 +4,7 @@ export const nameToId = (name) => {
   return name.replace(/[^\w]/g, '').toLowerCase();
 }
 
-export default class HelpPlugin extends ChatPlugin {
+export class Points extends ChatPlugin {
   help = [
     'Points: add points to things. `thing++` or `thing--` adds or removes',
     'points. Users are rate-limited from voting on the same thing multiple',
