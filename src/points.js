@@ -2,7 +2,7 @@ import { ChatPlugin, listen, respond, help, permissionGroup } from '@exoplay/exo
 
 export const nameToId = (name) => {
   return name.replace(/[^\w]/g, '').toLowerCase();
-}
+};
 
 export class Points extends ChatPlugin {
   register (bot) {
@@ -10,10 +10,10 @@ export class Points extends ChatPlugin {
     this.database('points', { things: {}, tops: [] });
   }
 
+  @permissionGroup('points');
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
-  @listen(/^([\s\w'@.\-:]*)\s*\+\+(?:\s+for (.*))?$/i);
-  @listen(/^([\s\w'@.\-:]*)\s*\-\-(?:\s+for (.*))?$/i);
-  async changePoints ([match, name, reason], val) {
+  @listen(/^([\s\w'@.\-:]*)\s*([\+\-]{2})(?:\s+for (.*))?$/i);
+  async changePoints ([, name, change, reason]) {
     name = name.trim();
     const id = nameToId(name);
 
@@ -23,11 +23,15 @@ export class Points extends ChatPlugin {
 
     if (!points) { points = this.buildPoints(name, id); }
 
-    points.points = points.points + val;
+    if (change === '++') {
+      points.points = points.points + 1;
+    } else {
+      points.points = points.points - 1;
+    }
 
     if (reason) {
       const reasonId = nameToId(reason);
-      const existingReason = points.reasons[reasonId] || { score: 0, reason: reason };
+      const existingReason = points.reasons[reasonId] || { score: 0, reason };
       existingReason.score++;
 
       points.reasons[reasonId] = existingReason;
@@ -41,9 +45,10 @@ export class Points extends ChatPlugin {
     return `${name} has ${points.points} points.`;
   }
 
+  @permissionGroup('points');
   @help('/top <n> to show top <n> users.');
   @respond(/^tops?\s*(\d*)?$/i);
-  async tops ([match, n=10]) {
+  async tops ([, n=10]) {
     await this.databaseInitialized();
 
     if (n > 25) { n = 25; }
@@ -51,16 +56,17 @@ export class Points extends ChatPlugin {
     const scores = this.bot.db.get('points.things').value();
     const tops = this.bot.db.get('points.tops').slice(0,n).value();
 
-    let text = [`Top ${Math.min(n, tops.length)}:`];
+    const text = [`Top ${Math.min(n, tops.length)}:`];
 
-    tops.forEach(t => text.push(`${scores[t].name}: ${scores[t].points}`))
+    tops.forEach(t => text.push(`${scores[t].name}: ${scores[t].points}`));
 
     return text.join('\n');
   }
 
+  @permissionGroup('points');
   @help('/score <user> to show score for a user.');
   @respond(/^score(?: for)?(.*)$/i);
-  async score ([match, name]) {
+  async score ([, name]) {
     name = name.trim();
     const id = nameToId(name);
 
@@ -86,7 +92,7 @@ export class Points extends ChatPlugin {
   async updateTops() {
     await this.databaseInitialized();
 
-    const tops = this.bot.db.get(`points.things`)
+    const tops = this.bot.db.get('points.things')
                              .orderBy('points', 'desc')
                              .map('id')
                              .value();
