@@ -1,30 +1,18 @@
-import { ChatPlugin } from '@exoplay/exobot';
+import { ChatPlugin, listen, respond, help, permissionGroup } from '@exoplay/exobot';
 
 export const nameToId = (name) => {
   return name.replace(/[^\w]/g, '').toLowerCase();
 }
 
 export class Points extends ChatPlugin {
-  help = [
-    'Points: add points to things. `thing++` or `thing--` adds or removes',
-    'points. Users are rate-limited from voting on the same thing multiple',
-    'times. Optionally add reasons: `thing++ for my reasons`.',
-  ].join(' ');
-
-  constructor () {
-    super(...arguments);
-
-    this.listen(/^([\s\w'@.\-:]*)\s*\+\+(?:\s+for (.*))?$/i, (match) => this.changePoints(match, 1));
-    this.listen(/^([\s\w'@.\-:]*)\s*\-\-(?:\s+for (.*))?$/i, (match) => this.changePoints(match, -1));
-    this.respond(/^tops?\s*(\d*)?$/i, this.tops);
-    this.respond(/^score(?: for)?(.*)$/i, this.score);
-  }
-
   register (bot) {
     super.register(bot);
     this.database('points', { things: {}, tops: [] });
   }
 
+  @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
+  @listen(/^([\s\w'@.\-:]*)\s*\+\+(?:\s+for (.*))?$/i);
+  @listen(/^([\s\w'@.\-:]*)\s*\-\-(?:\s+for (.*))?$/i);
   async changePoints ([match, name, reason], val) {
     name = name.trim();
     const id = nameToId(name);
@@ -53,6 +41,8 @@ export class Points extends ChatPlugin {
     return `${name} has ${points.points} points.`;
   }
 
+  @help('/top <n> to show top <n> users.');
+  @respond(/^tops?\s*(\d*)?$/i);
   async tops ([match, n=10]) {
     await this.databaseInitialized();
 
@@ -68,6 +58,8 @@ export class Points extends ChatPlugin {
     return text.join('\n');
   }
 
+  @help('/score <user> to show score for a user.');
+  @respond(/^score(?: for)?(.*)$/i);
   async score ([match, name]) {
     name = name.trim();
     const id = nameToId(name);
