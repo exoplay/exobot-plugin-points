@@ -5,6 +5,8 @@ export const nameToId = (name) => {
 };
 
 export class Points extends ChatPlugin {
+  name = 'points';
+
   register (bot) {
     super.register(bot);
     this.database('points', { things: {}, tops: [] });
