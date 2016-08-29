@@ -1,22 +1,23 @@
 import { ChatPlugin, listen, respond, help, permissionGroup } from '@exoplay/exobot';
+import clark from 'clark';
 
 export const nameToId = (name) => {
-  return name.replace(/[^\w]/g, '').toLowerCase();
+  return name.trim().replace(/[^\w]/g, '').toLowerCase();
 };
+
+const POINT_REGEX = /^([\s\w@.\-']+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
+const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 
 export class Points extends ChatPlugin {
   name = 'points';
-
-  register (bot) {
-    super.register(bot);
-    this.database('points', { things: {}, tops: [] });
-  }
+  defaultDatabase = { points: { things: {},tops: [] } };
 
   @permissionGroup('points');
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
-  @listen(/^([\s\w'@.\-:]*)\s*([\+\-]{2})(?:\s+for (.*))?$/i);
+  @listen(POINT_REGEX);
   async changePoints ([, name, change, reason]) {
-    name = name.trim();
+    this.lastVote = { name, change, reason };
+
     const id = nameToId(name);
 
     await this.databaseInitialized();
@@ -31,12 +32,15 @@ export class Points extends ChatPlugin {
       points.points = points.points - 1;
     }
 
+    const ret = [`${name} has ${points.points} points`];
+
     if (reason) {
       const reasonId = nameToId(reason);
       const existingReason = points.reasons[reasonId] || { score: 0, reason };
       existingReason.score++;
 
       points.reasons[reasonId] = existingReason;
+      ret.push([`${existingReason.score} of which ${existingReason.score === 1 ? 'is' : 'are'} for ${reason}`]);
     }
 
     this.bot.db.set(`points.things.${id}`, points).value();
@@ -44,7 +48,22 @@ export class Points extends ChatPlugin {
 
     this.updateTops();
 
-    return `${name} has ${points.points} points.`;
+
+    return ret.join(', ');
+  }
+
+  @permissionGroup('points');
+  @help('++ or -- alone will add (or remove) points from the most recently up/downvoted thing');
+  @listen(REPEAT_REGEX);
+  async repeat([, change, reason], message) {
+    // re-run changepoints with the same name, the new change, and either a new
+    // reason or the old one
+    return await this.changePoints([
+      undefined,
+      this.lastVote.name,
+      change,
+      reason || this.lastVote.reason
+    ], message);
   }
 
   @permissionGroup('points');
@@ -58,7 +77,8 @@ export class Points extends ChatPlugin {
     const scores = this.bot.db.get('points.things').value();
     const tops = this.bot.db.get('points.tops').slice(0,n).value();
 
-    const text = [`Top ${Math.min(n, tops.length)}:`];
+    const text = [clark(tops.map(t => scores[t].points))];
+    text.push(`Top ${Math.min(n, tops.length)}:`);
 
     tops.forEach(t => text.push(`${scores[t].name}: ${scores[t].points}`));
 
