@@ -1,4 +1,4 @@
-import { ChatPlugin, listen, respond, help, permissionGroup } from '@exoplay/exobot';
+import { ChatPlugin, listen, respond, help, permissionGroup, PropTypes as T } from '@exoplay/exobot';
 import clark from 'clark';
 
 export const nameToId = (name) => {
@@ -11,6 +11,7 @@ const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 export class Points extends ChatPlugin {
   name = 'points';
   defaultDatabase = { points: { things: {},tops: [] } };
+  propTypes = {};
 
   @permissionGroup('points');
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
