@@ -1,6 +1,6 @@
 {
   "name": "@exoplay/exobot-plugin-points",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "exobot plugin for points",
   "main": "points.js",
   "scripts": {
