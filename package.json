@@ -1,11 +1,11 @@
 {
   "name": "@exoplay/exobot-plugin-points",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "exobot plugin for points",
   "main": "points.js",
   "scripts": {
-    "build": "exobot-build",
-    "watch": "exobot-build --watch",
+    "build": "exobot build -i src/points.js -o points.js",
+    "watch": "exobot build -i src/points.js -o points.js --watch",
     "try": "exobot-try"
   },
   "repository": {
@@ -29,7 +29,8 @@
     "@exoplay/exobot": "3.x"
   },
   "devDependencies": {
-    "@exoplay/exobot": "3.x"
+    "@exoplay/exobot": "3.x",
+    "@exoplay/exobot-build": "0.0.6"
   },
   "dependencies": {
     "clark": "0.0.6"

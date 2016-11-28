@@ -21,8 +21,6 @@ export class Points extends ChatPlugin {
 
     const id = nameToId(name);
 
-    await this.databaseInitialized();
-
     let points = this.bot.db.get(`points.things.${id}`).value();
 
     if (!points) { points = this.buildPoints(name, id); }
@@ -71,8 +69,6 @@ export class Points extends ChatPlugin {
   @help('/top <n> to show top <n> users.');
   @respond(/^tops?\s*(\d*)?$/i);
   async tops ([, n=10]) {
-    await this.databaseInitialized();
-
     if (n > 25) { n = 25; }
 
     const scores = this.bot.db.get('points.things').value();
@@ -93,8 +89,6 @@ export class Points extends ChatPlugin {
     name = name.trim();
     const id = nameToId(name);
 
-    await this.databaseInitialized();
-
     const points = this.bot.db.get(`points.things.${id}`).value();
     const { reasons } = points;
 
@@ -113,8 +107,6 @@ export class Points extends ChatPlugin {
   }
 
   async updateTops() {
-    await this.databaseInitialized();
-
     const tops = this.bot.db.get('points.things')
                              .orderBy('points', 'desc')
                              .map('id')
