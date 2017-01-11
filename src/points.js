@@ -9,9 +9,9 @@ const POINT_REGEX = /^([\s\w@.\-']+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
 const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 
 export class Points extends ChatPlugin {
-  name = 'points';
+  static type  = 'points';
+  static propTypes = {};
   defaultDatabase = { points: { things: {},tops: [] } };
-  propTypes = {};
 
   @permissionGroup('points');
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');

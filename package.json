@@ -1,6 +1,6 @@
 {
   "name": "@exoplay/exobot-plugin-points",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "exobot plugin for points",
   "main": "points.js",
   "scripts": {
@@ -26,13 +26,14 @@
   },
   "homepage": "https://github.com/exoplay/exobot-plugin-points#readme",
   "peerDependencies": {
-    "@exoplay/exobot": "3.x"
+    "@exoplay/exobot": "4.x"
   },
   "devDependencies": {
-    "@exoplay/exobot": "3.x",
+    "@exoplay/exobot": "4.x",
     "@exoplay/exobot-build": "0.0.6"
   },
   "dependencies": {
+    "@exoplay/exobot-build": "0.0.6",
     "clark": "0.0.6"
   }
 }
