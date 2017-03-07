@@ -1,4 +1,4 @@
-import { ChatPlugin, listen, respond, help, permissionGroup, PropTypes as T } from '@exoplay/exobot';
+import { Plugin, listen, respond, help, permissionGroup, PropTypes as T } from '@exoplay/exobot';
 import clark from 'clark';
 
 export const nameToId = (name) => {
@@ -8,10 +8,10 @@ export const nameToId = (name) => {
 const POINT_REGEX = /^([\s\w@.\-']+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
 const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 
-export class Points extends ChatPlugin {
+export class Points extends Plugin {
   static type  = 'points';
   static propTypes = {};
-  defaultDatabase = { points: { things: {},tops: [] } };
+  defaultDatabase = { points: { things: {}, tops: [] } };
 
   @permissionGroup('points');
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
