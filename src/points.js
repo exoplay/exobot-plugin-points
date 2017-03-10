@@ -8,7 +8,7 @@ export const nameToId = (name) => {
 const POINT_REGEX = /^([\s\w@.\-']+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
 const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 
-export class Points extends Plugin {
+export default class Points extends Plugin {
   static type  = 'points';
   static propTypes = {};
   defaultDatabase = { points: { things: {}, tops: [] } };
