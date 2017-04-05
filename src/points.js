@@ -10,14 +10,48 @@ const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 
 export default class Points extends Plugin {
   static type  = 'points';
-  static propTypes = {};
+  static propTypes = {
+    spamTimeoutSeconds: T.number.isRequired,
+  };
+
+  static defaultProps = {
+    spamTimeoutSeconds: 60 * 5,
+  };
+
   defaultDatabase = { points: { things: {}, tops: [] } };
+  recentVotes = {};
+
+  isSpam(userName, thing) {
+    const recentVotes = this.recentVotes[userName];
+
+    if (!recentVotes) {
+      this.recentVotes[userName] = {};
+    }
+
+    const recentVote = this.recentVotes[userName][thing];
+    const now = Date.now();
+
+    if (!recentVote) {
+      this.recentVotes[userName][thing] = now;
+      return false;
+    }
+
+    const diff = (now - recentVote) / 1000;
+
+    if (diff < this.options.spamTimeoutSeconds) {
+      return true;
+    }
+  }
 
   @permissionGroup('points');
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
   @listen(POINT_REGEX);
-  async changePoints ([, name, change, reason]) {
+  async changePoints ([, name, change, reason], message) {
     this.lastVote = { name, change, reason };
+
+    if (this.isSpam(message.user.name, name)) {
+      return;
+    }
 
     const id = nameToId(name);
 
@@ -36,7 +70,12 @@ export default class Points extends Plugin {
     if (reason) {
       const reasonId = nameToId(reason);
       const existingReason = points.reasons[reasonId] || { score: 0, reason };
-      existingReason.score++;
+
+      if (change === '++') {
+        existingReason.score++;
+      } else {
+        existingReason.score--;
+      }
 
       points.reasons[reasonId] = existingReason;
       ret.push([`${existingReason.score} of which ${existingReason.score === 1 ? 'is' : 'are'} for ${reason}`]);
@@ -60,6 +99,20 @@ export default class Points extends Plugin {
     return await this.changePoints([
       undefined,
       this.lastVote.name,
+      change,
+      reason || this.lastVote.reason
+    ], message);
+  }
+
+  @permissionGroup('points');
+  @help('exobot++ or exobot-- adds or removes points from exobot');
+  @respond(REPEAT_REGEX);
+  async exobotPoints([, change, reason], message) {
+    // re-run changepoints with the same name, the new change, and either a new
+    // reason or the old one
+    return await this.changePoints([
+      undefined,
+      this.bot.options.name,
       change,
       reason || this.lastVote.reason
     ], message);

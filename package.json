@@ -1,12 +1,12 @@
 {
   "name": "@exoplay/exobot-plugin-points",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "exobot plugin for points",
   "main": "points.js",
   "scripts": {
     "build": "exobot build -i src/points.js -o points.js",
     "watch": "exobot build -i src/points.js -o points.js --watch",
-    "try": "exobot-try"
+    "example": "exobot run -i example/exobot.config.js -o example/discord.example.js"
   },
   "repository": {
     "type": "git",
