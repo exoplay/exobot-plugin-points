@@ -20,6 +20,7 @@ export default class Points extends Plugin {
 
   defaultDatabase = { points: { things: {}, tops: [] } };
   recentVotes = {};
+  lastVote = {};
 
   isSpam(userName, thing) {
     const recentVotes = this.recentVotes[userName];
@@ -47,7 +48,7 @@ export default class Points extends Plugin {
   @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
   @listen(POINT_REGEX);
   async changePoints ([, name, change, reason], message) {
-    this.lastVote = { name, change, reason };
+    this.lastVote[message.channel] = { name, change, reason };
 
     if (this.isSpam(message.user.name, name)) {
       return;
@@ -94,13 +95,16 @@ export default class Points extends Plugin {
   @help('++ or -- alone will add (or remove) points from the most recently up/downvoted thing');
   @listen(REPEAT_REGEX);
   async repeat([, change, reason], message) {
+    const lastVote = this.lastVote[message.channel];
+    if (!lastVote) { return; }
+
     // re-run changepoints with the same name, the new change, and either a new
     // reason or the old one
     return await this.changePoints([
       undefined,
-      this.lastVote.name,
+      lastVote.name,
       change,
-      reason || this.lastVote.reason
+      reason || lastVote.reason
     ], message);
   }
 
@@ -108,13 +112,16 @@ export default class Points extends Plugin {
   @help('exobot++ or exobot-- adds or removes points from exobot');
   @respond(REPEAT_REGEX);
   async exobotPoints([, change, reason], message) {
+    const lastVote = this.lastVote[message.channel];
+    if (!lastVote) { return; }
+
     // re-run changepoints with the same name, the new change, and either a new
     // reason or the old one
     return await this.changePoints([
       undefined,
       this.bot.options.name,
       change,
-      reason || this.lastVote.reason
+      reason || lastVote.reason
     ], message);
   }
 
