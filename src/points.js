@@ -44,9 +44,9 @@ export default class Points extends Plugin {
     }
   }
 
-  @permissionGroup('points');
-  @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"');
-  @listen(POINT_REGEX);
+  @permissionGroup('points')
+  @help('thing++ or thing-- to add or remove points. Optionally, "thing++ for <reason>"')
+  @listen(POINT_REGEX)
   async changePoints ([, name, change, reason], message) {
     this.lastVote[message.channel] = { name, change, reason };
 
@@ -91,9 +91,9 @@ export default class Points extends Plugin {
     return ret.join(', ');
   }
 
-  @permissionGroup('points');
-  @help('++ or -- alone will add (or remove) points from the most recently up/downvoted thing');
-  @listen(REPEAT_REGEX);
+  @permissionGroup('points')
+  @help('++ or -- alone will add (or remove) points from the most recently up/downvoted thing')
+  @listen(REPEAT_REGEX)
   async repeat([, change, reason], message) {
     const lastVote = this.lastVote[message.channel];
     if (!lastVote) { return; }
@@ -108,9 +108,9 @@ export default class Points extends Plugin {
     ], message);
   }
 
-  @permissionGroup('points');
-  @help('exobot++ or exobot-- adds or removes points from exobot');
-  @respond(REPEAT_REGEX);
+  @permissionGroup('points')
+  @help('exobot++ or exobot-- adds or removes points from exobot')
+  @respond(REPEAT_REGEX)
   async exobotPoints([, change, reason], message) {
     const lastVote = this.lastVote[message.channel];
     if (!lastVote) { return; }
@@ -125,9 +125,9 @@ export default class Points extends Plugin {
     ], message);
   }
 
-  @permissionGroup('points');
-  @help('/top <n> to show top <n> users.');
-  @respond(/^tops?\s*(\d*)?$/i);
+  @permissionGroup('points')
+  @help('/top <n> to show top <n> users.')
+  @respond(/^tops?\s*(\d*)?$/i)
   async tops ([, n=10]) {
     if (n > 25) { n = 25; }
 
@@ -142,9 +142,9 @@ export default class Points extends Plugin {
     return text.join('\n');
   }
 
-  @permissionGroup('points');
-  @help('/score <user> to show score for a user.');
-  @respond(/^score(?: for)?(.*)$/i);
+  @permissionGroup('points')
+  @help('/score <user> to show score for a user.')
+  @respond(/^score(?: for)?(.*)$/i)
   async score ([, name]) {
     name = name.trim();
     const id = nameToId(name);
