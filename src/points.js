@@ -2,10 +2,10 @@ import { Plugin, listen, respond, help, permissionGroup, PropTypes as T } from '
 import clark from 'clark';
 
 export const nameToId = (name) => {
-  return name.trim().replace(/[^\w]/g, '').toLowerCase();
+  return name.trim().replace(/\s/g, '').toLowerCase();
 };
 
-const POINT_REGEX = /^([\s\w@.\-']+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
+const POINT_REGEX = /^((?![\+\-]{2}|\s)\w+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
 const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
 
 export default class Points extends Plugin {
