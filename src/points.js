@@ -5,8 +5,8 @@ export const nameToId = (name) => {
   return name.trim().replace(/\s/g, '').toLowerCase();
 };
 
-const POINT_REGEX = /^((?![\+\-]{2}|\s)\w+):?\s*([\+\-]{2})(?:\s+for (.*))?$/;
-const REPEAT_REGEX = /^([\+\-]{2})(?:\s+for (.*))?$/;
+const POINT_REGEX = /^((?![\+\-]{2}|\s)\w+):?\s*([\+\-]{2})(?:\s+(?:for|because|cause|cuz) (.*))?$/;
+const REPEAT_REGEX = /^([\+\-]{2})(?:\s+(?:for|because|cause|cuz)\s(.*))?$/;
 
 export default class Points extends Plugin {
   static type  = 'points';
